@@ -1,12 +1,45 @@
 package org.jbdd.pwet;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.Iterator;
 import java.util.List;
 
 public class Test {
+	public static void testProduit() {
+		Connection conn = null;
+		ProduitManager pm = null;
+		Produit p1 = new Produit();
+		Produit p2 = new Produit();
+		
+		try {
+			conn = Singleton.DS.getConnection();
+			p1.setIdProduit(2);
+			p1.setNomProduit("Biscuit");
+			p1.setPrixProduit(new BigDecimal(5.21));
+			
+			
+			pm = new ProduitManager();
+			pm.createTable(conn);
+			
+			pm.create(conn, p1);
+			p2 = pm.read(conn, 2);
+			assert(p1.getNomProduit() == p2.getNomProduit());
+			
+			conn.commit();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch( Exception ignore) {}
+		}
+		
+	}
 	
 	public static void main(String[] args) {
+		testProduit();
 		Connection conn = null;
 		UserManager userManager = null;
 		User user1 = null;
